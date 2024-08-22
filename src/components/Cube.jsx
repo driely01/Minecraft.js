@@ -5,6 +5,7 @@ import { OrbitControls } from "three/examples/jsm/Addons.js";
 import { World } from "../utils/world";
 import { createUI } from "../utils/ui";
 import { Player } from "../utils/player";
+import { Physics } from "../utils/physics";
 
 function firstCube(canvas, parent) {
 	
@@ -36,7 +37,7 @@ function firstCube(canvas, parent) {
 	scene.add(world)
 	
 	const player = new Player(scene)
-	createUI(world, player)
+	const physics = new Physics(scene)
 	
 	function setupLights() {
 		const sun = new THREE.DirectionalLight()
@@ -66,9 +67,9 @@ function firstCube(canvas, parent) {
 		let delta = (currentTime - previousTime) / 1000
 
 		requestAnimationFrame(animate)
-		player.applyInputs(delta)
-		stats.update()
+		physics.update(delta, player, world)
 		renderer.render(scene, player.controls.isLocked ? player.camera : orbitCamera)
+		stats.update()
 
 		previousTime = currentTime
 	}
@@ -83,6 +84,7 @@ function firstCube(canvas, parent) {
 	})
 
 	setupLights()
+	createUI(world, player)
 	animate()
 }
 const Cube = () => {
